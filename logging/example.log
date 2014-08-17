@@ -1,0 +1,2 @@
+INFO:root:This message should go to the log file
+WARNING:root:And this, too
