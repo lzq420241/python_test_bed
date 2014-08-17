@@ -1,2 +1,4 @@
+DEBUG:__main__:This message should go to the log file...
 INFO:root:This message should go to the log file
+INFO:__main__:This message should go to the log file
 WARNING:root:And this, too
