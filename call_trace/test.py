@@ -35,3 +35,18 @@ if __name__ == '__main__':
     y = raw_input("input b:")
     f2(int(x), int(y))'''
     f2(6,9)
+
+
+'''
+code for locate where the expection origins
+
+try:
+    logging.info("K[%s] Parameters: %s" % (kw_name, args[1:]))
+    kw_result = getattr(sys.modules[__name__], kw_name)(*kw_args)
+except Exception, e:
+    import traceback
+    tb = traceback.format_exc()
+    logging.error(tb)
+    raise e
+        
+'''
