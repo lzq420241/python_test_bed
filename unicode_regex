@@ -1,0 +1,10 @@
+# coding=utf-8
+
+__author__ = 'liziqiang'
+import re
+
+
+s2 = u'离字强 （ 诺基亚 ）'
+valid_style = re.compile(ur'(\w+)\W[\uff08]\W*(\w+)\W*[\uff09]', re.UNICODE)
+m2 = valid_style.match(s2)
+print "%s-%s" % (m2.group(2), m2.group(1))
