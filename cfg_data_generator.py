@@ -13,10 +13,12 @@ TEST_VALUES = '10.69.195.137 10.69.216.160 "" 1'
 # TEST_VALUES = 'SRAC 10.69.216.207 10.69.195.133 1'
 #TEST_VALUES = 'SRAC "10.69.216.207\n10.69.216.13" 10.69.195.133 1'
 
+
 # step 1
 def create_Tool_Parameters_CFG_xml_file():
     _remove_CFG_parameter_xml_file()
     data_files_path = _get_CFG_data_files_path()
+    print data_files_path
     data_files_path = _combine_tool_name_with_data_files_path(data_files_path)
     tool_ip_args = get_tool_names_for_get_items_name_value()
     '''
@@ -53,7 +55,7 @@ def _get_CFG_data_files_path():
     if SCRIPT_PATH:
         data_dir = '%s\\%s\\*' % (CFG_DIR, CFG_DATA_FOLDER_NAME)
     else:
-        data_dir = '..\\%s\\*' % CFG_DATA_FOLDER_NAME
+        data_dir = '..%s%s%s*' % (os.sep, CFG_DATA_FOLDER_NAME, os.sep)
     cfg_tool_files = glob.glob(data_dir)
     return cfg_tool_files
 
@@ -166,10 +168,12 @@ def _get_tool_BTS_for_get_items_name_value():
 
 
 def _get_BTS_control_pc_ip_address():
-    host_ips = socket.gethostbyname_ex(socket.gethostname())[2]
+    #return '10.69.195.177'
+    return '10.69.6.15'
+    '''host_ips = socket.gethostbyname_ex(socket.gethostname())[2]
     for host_ip in host_ips:
         if '192.168' not in host_ip:
-            return host_ip
+            return host_ip'''
 
 
 def _is_matched_with_ip_address_format(ip_address):
@@ -285,6 +289,9 @@ def get_item_name_and_value(data_file_path, args):
     kw_with_ip, kw_nexe_item_with_ip = _get_keywords_for_cut_item_name_and_value(args)
     item_name_and_value = _cut_item_name_and_value_with_keywords(f_read, kw_with_ip, kw_nexe_item_with_ip)
     items = _find_all_item_name_and_value(item_name_and_value)
+    print "items: %s" % items
+    print "args: %s" % args
+    print kw_nexe_item_with_ip
     _check_tool_data_files_are_matched_for_every_ne(data_file_path, f_read, kw_nexe_item_with_ip, items, args)
     return items
 
@@ -311,13 +318,17 @@ def _check_tool_data_files_are_matched_for_every_ne(data_file_path, f_read, kw_n
     flag_error_items_name_more = False
     flag_error_items_name_less = False
     for item_name, item_value in items_name_value.items():
+        if f_read_string_list.count(item_name+'=') < len_ne:
+                flag_error_items_name_less = True
+                print 'Error_less: -file "%s" -ne "%s" -parameter "%s" is 0 in 1 ne.' % (
+                    data_file_name, f_read_str.split('\n')[0], item_name)
         for f_read_str in f_read_string_list:
             len_item_name = f_read_str.count(item_name + '=')
             if len_item_name > 1:
                 flag_error_items_name_more = True
                 print 'Error_more: -file "%s" -ne "%s" -parameter "%s" is more than 1 in 1 ne.' % (
                     data_file_name, f_read_str.split('\n')[0], item_name)
-            elif len_item_name == 0:
+            elif len_item_name == 0:# or len_item_name < len_ne:
                 flag_error_items_name_less = True
                 print 'Error_less: -file "%s" -ne "%s" -parameter "%s" is 0 in 1 ne.' % (
                     data_file_name, f_read_str.split('\n')[0], item_name)
@@ -366,6 +377,10 @@ def _move_empty_line(item_name_and_value):
 def _find_all_item_name_and_value_through_reg(item_name_and_value):
     find_reg = '(.*?)=(.*?\n)'
     findall_group = re.findall(find_reg, item_name_and_value)
+    print findall_group
+    find_reg = '(.*?)=(.*?)\n'
+    findall_group = re.findall(find_reg, item_name_and_value)
+    print findall_group
     return dict(findall_group)
 
 
