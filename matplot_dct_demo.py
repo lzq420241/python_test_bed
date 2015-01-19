@@ -5,7 +5,7 @@ from time import mktime
 from datetime import datetime
 
 
-
+plt.close('all')
 def dct_convert_log_to_dict(dct_log_path):
     log_list = []
     log_dict = {}
@@ -18,7 +18,7 @@ def dct_convert_log_to_dict(dct_log_path):
         log_list.append(category)
 
     log_list_title = log_list[0]
-    log_list = log_list[1:]
+    log_list = log_list[2:-1]
     list_value = zip(*log_list)
 
     for i in range(len(log_list_title)):
@@ -54,11 +54,21 @@ fig = plt.figure(facecolor='white')
 axescolor = '#f6f6f6' # the axes background color
 ax1 = fig.add_axes(rect1, axisbg=axescolor) #left, bottom, width, height 
 ax2 = fig.add_axes(rect2, axisbg=axescolor, sharex=ax1)
-print ax1.get_xlim()
-#ax1.xaxis.set_major_locator(mdates.MinuteLocator('%M'))
-#ax1.xaxis.set_major_formatter(mdates.DateFormatter('%M:%S'))
+ax1.get_xaxis().get_major_formatter().set_useOffset(False)
+print ax1.get_xlim(), x[0], x[-1]
+
+# locator = mdates.AutoDateLocator()
+# locator.intervald[SECONDLY] = [30]
+ax1.xaxis.set_major_locator(mdates.SecondLocator(interval=5))
+ax1.xaxis.set_minor_locator(mdates.SecondLocator())
+ax1.xaxis.set_major_formatter(mdates.DateFormatter('%M:%S'))
+y_max = max(map(float,y2)) + 0.1
+y_min = min(map(float,y2)) - 0.1
+
+print y_min, y_max
+# ax1.xaxis.set_minor_formatter(mdates.DateFormatter('%S'))
 #ax1.set_xlim(x[0], x[-1])
-ax2.set_ylim(30, 40)
+ax2.set_ylim(y_min, y_max)
 
 
 ax1.plot(x, y1, 'b-')
