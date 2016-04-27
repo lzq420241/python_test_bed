@@ -23,6 +23,6 @@ class commonClass(object):
 print(Meta.__class__)
 print(MyClass.__class__)
 print(type(MySubclass))
-print(isinstance(MySubclass, type(MySubclass)))
+print(isinstance(MySubclass, Meta))
 print(MySubclass.__class__)
-print(commonClass.__class__)
+print(commonClass.__class__ == type(commonClass))
