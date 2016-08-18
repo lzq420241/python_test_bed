@@ -1,4 +1,4 @@
-
+import functools
 class memoized(object):
    '''Decorator. Caches a function's return value each time it is called.
    If called later with the same arguments, the cached value is returned
@@ -14,16 +14,18 @@ class memoized(object):
          value = self.func(*args)
          self.cache[args] = value
          return value
+   def __get__(self, obj, objtype):
+      '''Support instance methods.'''
+      return functools.partial(self.__call__, obj)
 
 @memoized
 class Node(object):
-    # __metaclass__ = Singleton
     def __init__(self, data_s, data_c, data_e):
         self.data_s = data_s
         self.data_c = data_c
         self.data_e = data_e
         self.children = []
-
+    @memoized
     def add_child(self, obj):
         self.children.append(obj)
 
@@ -38,27 +40,32 @@ def post_order(Node, children):
 
 n = Node('1s','','1e')
 p = Node('1.1s','','1.1e')
-pn = Node('1.1s','','1.1e')
-assert p==pn
+# pn = Node('1.1s','','1.1e')
+# assert p==pn
 q = Node('1.2s','','1.2e')
+r = Node('1.3s','','1.3e')
 q1 = Node('1.21s','','1.21e')
 q2 = Node('1.22s','','1.22e')
-q21 = Node('1.221s','1.221c','1.221e')
-q22 = Node('1.222s','','1.222e')
-q2.add_child(q21)
-q2.add_child(q22)
+# q21 = Node('1.221s','1.221c','1.221e')
+# q22 = Node('1.222s','','1.222e')
+# q2.add_child(q21)
+# q2.add_child(q22)
 
-q3 = Node('1.23s','1.23c','1.23e')
-q.add_child(q1)
-q.add_child(q2)
-q.add_child(q3)
+# q3 = Node('1.23s','1.23c','1.23e')
 
-p1 = Node('1.11s','','1.11e')
-p2 = Node('1.12s','','1.12e')
-p.add_child(p1)
-p.add_child(p2)
+# q.add_child(q3)
+
+# p1 = Node('1.11s','','1.11e')
+# p2 = Node('1.12s','','1.12e')
+# p.add_child(p1)
+# p.add_child(p2)
+q = Node('1.2s','','1.2e')
 n.add_child(p)
 n.add_child(q)
+n.add_child(r)
+n.add_child(q)
+q.add_child(q1)
+q.add_child(q2)
 
 post_order(n, n.children)
 
