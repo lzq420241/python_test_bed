@@ -1,0 +1,16 @@
+---
+- hosts: rcp_vms_UP16_engine_team 
+  remote_user: _rcpadmin
+  tasks:
+  - name: fetch testagent
+    copy:
+      src: /home/ziqiang/RCPSimulator/testagent/dist/testagent-1.0.tar.gz
+      dest: /home/_rcpadmin/testagent-1.0.tar.gz
+  - name: uninstall testagent
+    pip:
+      name: testagent
+      state: absent
+  - name: install testagent
+    pip:
+      name: /home/_rcpadmin/testagent-1.0.tar.gz
+      state: present
