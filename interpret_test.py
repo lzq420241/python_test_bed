@@ -40,12 +40,7 @@ class Interpreter(InteractiveConsole):
 
     def push(self, command):
         with std_redirector(stdin=self.fd, stdout=self.fd, stderr=self.fd):
-            try:
-                more = InteractiveConsole.push(self, command)
-                result = self.fd.read()
-            except (SyntaxError, OverflowError):
-                pass
-            return more, result
+            InteractiveConsole.push(self, command)
 
 if __name__ == '__main__':
     import __main__
@@ -55,15 +50,14 @@ if __name__ == '__main__':
         serversocket.bind(("", 12345))
         serversocket.listen(1)
         conn, addr = serversocket.accept()
-        #py = Interpreter(ns,conn)
-        #py.push('a=1')
-        #py.push('a+=1')
-        sys.stdin, sys.stdout, sys.stderr = conn, conn, conn
+        py = Interpreter(ns,conn)
+        py.push('a=1')
+        py.push('a+=1')
+        sys.stdin = conn
+        # print(sys.stdin.read())
         while select.select([conn], [], []):
             time.sleep(1)
-            #m, r = py.push('print(a+3)')
-            for l in sys.stdin:
-                print l
+            py.push(sys.stdin.read())
     except:
         import traceback
         traceback.print_exc()
